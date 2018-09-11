@@ -4,8 +4,8 @@
       <div class="person_head_box">
         <i class="iconfont icon-shouye" @click="goto('/homepage')"></i>
         <span class="person_head_box_span">网易严选</span>
-        <i class="iconfont icon-sousuo"></i>
-        <i class="iconfont icon-gouwuche"></i>
+        <i class="iconfont icon-sousuo" @click="goto('/Recommend')"></i>
+        <i class="iconfont icon-gouwuche" @click="goto('/shop')"></i>
       </div>
     </div>
     <div class="person_body" v-show="isShow">
@@ -51,8 +51,8 @@
         <span class="d3_s1">使用密码验证登录</span>
       </div>
       <div class="person_enter_login">
-        <div class="login_d1" @click="register">
-          <span>登录</span>
+        <div class="login_d1" @click.prevent="register">
+          <span >登录</span>
         </div>
         <div class="login_d2">
           <span @click="isShow=true">其他方式登录</span>
@@ -62,6 +62,7 @@
   </div>
 </template>
 <script>
+  import {MessageBox} from 'mint-ui'
   export default {
     data(){
       return{
@@ -75,10 +76,19 @@
         this.$router.replace(path)
       },
       register(){
-        if( /^1\d{10}$/.test(this.phone) &&  /^1\d{5}$/.test(this.code)){
-          alert("成功")
+        if( /^1\d{10}$/.test(this.phone)){
+          MessageBox.alert("请输入正确的验证码","登录失败")
+          }else {
+          MessageBox.alert("请输入正确的手机号","登录失败")
+          return
+        }
+        if(/^1\d{4}$/.test(this.code)){
+
+          MessageBox.alert("登录成功")
+          return
         }else{
-          alert("失败")
+          MessageBox.alert("验证码错误")
+          return
         }
       }
     },

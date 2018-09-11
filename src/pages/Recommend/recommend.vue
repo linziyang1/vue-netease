@@ -2,26 +2,26 @@
   <div class="recommend">
     <div class="recommend_head">
       <div class="recommend_head_box">
-        <i class="iconfont icon-shouye"></i>
+        <i class="iconfont icon-shouye"  @click="goto('/homepage')"></i>
         <span class="recommend_head_box_span">网易严选</span>
         <i class="iconfont icon-sousuo"></i>
-        <i class="iconfont icon-gouwuche"></i>
+        <i class="iconfont icon-gouwuche" @click="goto('/shop')"></i>
       </div>
     </div>
     <div class="recommend_content">
       <div class="recommend_content_bs">
         <!--轮播图-->
         <div class="swiper-container">
-          <ul class="swiper-wrapper">
-            <li class="swiper-slide" v-for="(item,index) in detail.banner" :key="index">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" v-for="(item,index) in detail.banner" :key="index">
               <img :src="item.picUrl" alt="">
               <div class="recommend_content_nav_lis_div">
                 <div class="recommend_content_nav_lis_div_div1">{{item.subTitle}}</div>
                 <div class="recommend_content_nav_lis_div_div2">{{item.title}}</div>
                 <div class="recommend_content_nav_lis_div_div3">{{item.desc}}</div>
               </div>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
         <!--图片导航-->
         <div class="recommend_content_essay">
@@ -34,7 +34,7 @@
         </div>
         <hr>
         <!--严选推荐-->
-        <div class="recommend_content_body">
+        <div class="recommend_content_body" v-if="detail.recommendOne">
           <div class="recommend_content_body_title">{{detail.recommendOne.nickname}}</div>
           <div class="recommend_content_body_con">
             <img :src="detail.recommendOne.picUrl" alt="">
@@ -112,7 +112,7 @@
         </div>
         <hr>
         <!--重复严选推荐内容-->
-        <div class="recommend_content_body">
+        <div class="recommend_content_body" v-if="detail.zhenThree">
           <div class="recommend_content_body_title">{{detail.zhenThree.nickname}}</div>
           <div class="recommend_content_body_con">
             <img :src="detail.zhenThree.picUrl" alt="">
@@ -240,12 +240,29 @@
 <script>
   import BScroll from "better-scroll"
   import SwiPer from "swiper"
+  import 'swiper/dist/css/swiper.min.css'
   import {mapState} from "vuex"
   export default {
     computed:{
       ...mapState(["detail"])
     },
+    methods:{
+      goto(path){
+        this.$router.replace(path)
+      },
+    },
     mounted(){
+      this.$store.dispatch("getClassify",(()=>{
+        this.$nextTick(()=>{
+          new SwiPer(".swiper-container",{
+            loop:true,
+            slidesPerView: 'auto',
+            centeredSlides: true,
+            spaceBetween: 15,
+            observer:true,
+          })
+        })
+      }))
       new BScroll(".recommend_content",{
         click:true,
         scrollY: true
@@ -258,15 +275,7 @@
         click:true,
         scrollX: true
       })
-      new SwiPer(".swiper-container",{
-        slidesPerView: 'auto',
-        centeredSlides: true,
-        spaceBetween: 15,
-        pagination: {
-          el: '.swiper-pagination',
-          clickable: true,
-        },
-      })
+
     }
   }
 
@@ -313,13 +322,14 @@
       .recommend_content_bs
         width 100%
         .swiper-container
-          padding-top 45px
+          padding-top 55px
           width 100%
-          ul
-            width 1400px
+          .swiper-wrapper
+            width 3000px
             height 200px
             overflow hidden
             .swiper-slide
+              text-align center
               position relative
               width 330px !important
               height 200px

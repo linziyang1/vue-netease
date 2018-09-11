@@ -26,11 +26,13 @@ export default {
       commit(RECEIVE_HOME,{home})
     }
   },
-  async getClassify({commit}){
+  async getClassify({commit},cb){
     const result = await reqClassify()
     if (result.code===0){
       const detail = result.detail
+      console.log(detail)
       commit(RECEIVE_CLASSIFY,{detail})
+      cb&cb()
     }
   },
   async getClassifyNav({commit},cb){

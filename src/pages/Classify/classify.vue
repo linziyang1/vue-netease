@@ -9,25 +9,25 @@
     <div class="classify_content">
       <div class="classify_bsc">
         <div class="classify_content_left">
-          <ul ref="aaa">
-            <li v-for="(item,index) in nav.categoryL1List" @click="gotoClass" :key="index">{{item.name}}</li>
+          <ul ref="uls">
+            <li :class="{on:mas_index === index}" v-for="(item,index) in nav.categoryL1List" @click="gotoClass($event,index)" :key="index">{{item.name}}</li>
           </ul>
         </div>
       </div>
     </div>
+
     <div class="classify_content1">
       <div class="classify_bss">
         <div class="classify_content_right">
           <div class="classify_content_right_img">
-            <img src="http://yanxuan.nosdn.127.net/e7e5e94d7bb43b6b9043fee3c1da851d.png" alt="">
+            <img :src="nav.categoryL1List[mas_index].bannerUrl" alt="">
           </div>
           <div class="classify_content_right_list">
             <ul>
-              <li v-for="(item,index) in nav.categoryL1List" :key="index">
-                <img src="http://yanxuan.nosdn.127.net/70082b1f2a4284939f3a656ffcc3af05.png" alt="">
-                <div>配件第2件半价</div>
+              <li v-for="(item,index) in nav.categoryL1List[mas_index].subCateList" :key="index" >
+                <img :src="item.wapBannerUrl" alt="">
+                <div>{{item.frontName}}</div>
               </li>
-
             </ul>
           </div>
         </div>
@@ -39,29 +39,35 @@
   import {mapState} from "vuex"
   import BScroll from "better-scroll"
   export default {
+    data(){
+      return{
+        mas_index:0
+      }
+    },
     mounted(){
       this.$store.dispatch("getClassifyNav",()=>{
         this.$nextTick(()=>{
-          this.$refs.aaa.children[0].className = "on"
+          this.$refs.uls.children[0].className = "on"
+          new BScroll(".classify_content",{
+            click:true,
+            scrollY:true
+          })
+          new BScroll(".classify_content1",{
+            click:true,
+            scrollY:true
+          })
         })
-      })
 
-      new BScroll(".classify_content",{
-        click:true,
-        scrollY:true
-      })
-      new BScroll(".classify_content1",{
-        click:true,
-        scrollY:true
       })
     },
     methods:{
-      gotoClass(event){
-        Array.from(this.$refs.aaa.children).forEach((item)=>{
-          if (item.className){
-            item.className = ""
-          }else {
+      gotoClass(event,index){
+        Array.from(this.$refs.uls.children).map((item)=>{
+          if (!item.className){
             event.target.className = "on"
+            this.mas_index = index
+          }else {
+            item.className = ""
           }
         })
       }
@@ -149,11 +155,15 @@
             float left
             text-align center
             img
-              width 70px
-              height 70px
+              width 55px
+              height 55px
+              margin-bottom 15px
               border-radius 80px
             div
               width 88%
+              height 25px
               font-size 12px
               margin-left 5px
+              overflow hidden
+
 </style>

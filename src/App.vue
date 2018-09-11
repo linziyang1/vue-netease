@@ -8,7 +8,7 @@
   import  Footernav from "./components/FooterNav/footernav.vue"
   export default {
     mounted(){
-      this.$store.dispatch("getClassify")
+
       this.$store.dispatch("getHome")
     },
     components:{

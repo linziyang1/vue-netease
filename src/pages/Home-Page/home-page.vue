@@ -11,7 +11,7 @@
       <!--导航-->
       <div class="page_nav">
         <ul class="nav_uls" ref="nav">
-          <li v-for="(item,index) in data" :key="index" @click="gotonav">{{item.name}}</li>
+          <li :class="{on:msg_index === index}" v-for="(item,index) in data" :key="index" @click="gotonav($event,index)">{{item.name}}</li>
         </ul>
       </div>
     </div>
@@ -244,6 +244,11 @@
   import Swiper from "swiper"
   import "swiper/dist/css/swiper.min.css"
   export default {
+    data(){
+      return{
+        msg_index:0
+      }
+    },
     mounted(){
       this.$store.dispatch("getNavSwiper",()=>{
         this.$nextTick(() =>{
@@ -258,7 +263,6 @@
           this.$refs.nav.children[0].className = "on"
         })
       })
-
       new BScroll(".bscroll",{
         scrollY: true,
         click:true
@@ -282,20 +286,20 @@
 
     },
     methods:{
-      gotonav(event){
-
+      gotonav(event,index){
         Array.from(this.$refs.nav.children).forEach((item)=>{
           if(item.className){
             item.className = ""
           }else {
             event.target.className = "on"
+            this.msg_index = index
           }
         })
       }
     },
 
     computed:{
-      ...mapState(["categoryL1List","data","home"])
+      ...mapState(["categoryL1List","data"])
     }
   }
 
@@ -349,7 +353,7 @@
             font-size 14px
             line-height 30px
             margin-left 28px
-            padding 0 10px
+            padding 0 8px
             box-sizing border-box
             position relative
             &.on
